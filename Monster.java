@@ -1,60 +1,49 @@
-import java.util.Random;
-
 public class Monster{
-	protected String kind; //몬스터 종류
-	protected int hp; //체력
-	protected int power; //공격력
-	protected static int num; //몬스터 종류 배열 인덱스 선택
+	public String kind; //몬스터 종류
+	public double hp; //체력
+	public double power; //공격력
+	public static int num; //몬스터 종류 배열 인덱스 선택
 	
 	public Monster() {
-		this(kiki(getnum()), hphp(getnum()), popo(getnum()));
+		this("none",0,0);
 	}
 	
-	public Monster(String kind, int hp, int power) {
+	public Monster(String kind, double hp, double power) {
 		this.kind = kind;
 		this.hp = hp;
 		this.power = power;
 	}
 	
-	private static int getnum() {
-		Random randomNum = new Random();
-		num = randomNum.nextInt(4);
-		return num;
-	}
-	
-	public static String kiki(int n) { //몬스터 종류
-		String[] monKind = {"Werewolf", "Zombie", "Ghoul", "Assassin"};
-		return monKind[n];
-	}
-	
-	public static int hphp(int n) { //몬스터 체력
-		int[] hparr = {40, 30, 35, 25};
-		return hparr[n];
-	}
-	
-	public static int popo(int n) { //몬스터 공격력
-		int[] poarr = {25, 35, 30, 40};
-		return poarr[n];
-	}
-	
 	public void getInfo() { //몬스터 정보 출력
-		System.out.printf("Monster : %s  HP : %d  Power : %d", kind, hp, power);
+		System.out.printf("몬스터 : %s   HP : %.2f   공격력 : %.2f\n", kind, hp, power);
 	}
 	
 	public void getHp() { //몬스터 남은 체력 출력
-		System.out.printf("Enemy's remain HP : %d\n", hp);
+		System.out.printf("%s의 남은 HP : %.2f\n", kind, hp);
 	}
 }
 
 class Boss extends Monster{ //보스 몬스터
+	int fullhp;
+	int index;
+	
 	public Boss() {
-		kind = "Baron Humba";
 		hp = 150;
 		power = 45;
+		fullhp = 150;
+		index = 0;
+	}
+	
+	public String bossSelect() {
+		String[] bossKind = {"펜릴", "요르문간드", "오우거킹", "드래곤"}; //보스 종류
+		return bossKind[index%4];
 	}
 	
 	public void levelUp() {
-		hp *= 1.1;
-		power *= 1.1;
+		hp = fullhp;
+		hp *= 1.8;
+		fullhp *= 1.8;
+		power *= 1.8;
+		index++;
 	}
 }
