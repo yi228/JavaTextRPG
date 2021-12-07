@@ -1,7 +1,4 @@
-public class Monster{
-	public String kind; //몬스터 종류
-	public double hp; //체력
-	public double power; //공격력
+public class Monster extends Creature{
 	public static int num; //몬스터 종류 배열 인덱스 선택
 	
 	public Monster() {
@@ -41,9 +38,9 @@ class Boss extends Monster{ //보스 몬스터
 	
 	public void levelUp() {
 		hp = fullhp;
-		hp *= 1.8;
-		fullhp *= 1.8;
-		power *= 1.8;
+		hp *= 2.1;
+		fullhp *= 2.1;
+		power *= 2.1;
 		index++;
 	}
 }
