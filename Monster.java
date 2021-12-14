@@ -16,7 +16,7 @@ public class Monster extends Creature{
 	}
 	
 	public void getHp() { //몬스터 남은 체력 출력
-		System.out.printf("%s의 남은 HP : %.2f\n", kind, hp);
+		System.out.printf("%s의 남은 HP : %.2f\n\n", kind, hp);
 	}
 }
 
@@ -36,11 +36,15 @@ class Boss extends Monster{ //보스 몬스터
 		return bossKind[index%4];
 	}
 	
+	public void getInfo() { //보스 정보 출력
+		System.out.printf("보스 : %s   HP : %.2f   공격력 : %.2f\n", kind, hp, power);
+	}
+	
 	public void levelUp() {
 		hp = fullhp;
-		hp *= 2.1;
-		fullhp *= 2.1;
-		power *= 2.1;
+		hp *= 2;
+		fullhp *= 2;
+		power *= 1.7;
 		index++;
 	}
 }

@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -22,6 +23,7 @@ public class Character extends Creature{
 	public int loadCount;
 	public int ld;
 	private int i;
+	private double poBonus;
 	
 	public Character(){ //초기 캐릭터 정보
 		level = 1;
@@ -31,6 +33,7 @@ public class Character extends Creature{
 		loadCount = 0;
 		killCount = 0;
 		deathCount = 0;
+		poBonus = 1.1;
 	}
 	
 	public int load() throws IOException {
@@ -85,7 +88,13 @@ public class Character extends Creature{
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		System.out.printf("직업을 선택하세요 : 1. 법사  2. 암살자  3. 기사\n");
-		tmpJob = sc.nextInt();
+		try{
+			tmpJob = sc.nextInt();
+		}catch(InputMismatchException im) {
+			System.out.println("숫자를 입력하세요.\n");
+			sc = new Scanner(System.in);
+			continue;
+		}
 		if(tmpJob == 1) {
 			kind = "법사";
 			hp = 110;
@@ -98,24 +107,24 @@ public class Character extends Creature{
 			kind = "암살자";
 			hp = 80;
 			fullhp = 80;
-			power = 26;
+			power = 25;
 			skill = "급소 찌르기";
 			break;
 		}
 		else if(tmpJob == 3) {
 			kind = "기사";
-			hp = 120;
-			fullhp = 120;
-			power = 16;
+			hp = 150;
+			fullhp = 150;
+			power = 15;
 			skill = "연속 베기";
 		break;
 		}
-		else if(tmpJob == 4) {
-			kind = "기사";
-			hp = 1200000;
-			fullhp = 1200000;
-			power = 1600000;
-			skill = "연속 베기";
+		else if(tmpJob == 0) {
+			kind = "tester";
+			hp = 1000000;
+			fullhp = 1000000;
+			power = 1000000;
+			skill = "skill";
 		break;
 		}
 		else {
@@ -135,6 +144,11 @@ public class Character extends Creature{
 		System.out.println("레벨 업!\n");
 		if(level%5==0) {
 			System.out.printf("이제 보스 사냥터에 들어갈 수 있습니다.\n");
+		}
+		if(level%5==1) {
+			power *= poBonus;
+			skillPower *= poBonus;
+			poBonus += 0.2;
 		}
 	}
 	
@@ -166,8 +180,12 @@ public class Character extends Creature{
 	public void death() { //캐릭터 사망 시
 		hp = fullhp;
 		exp = 0;
-		money = 0;
-		potion = 0;
+		if(money>30) money=30;
+		else money = 0;
+		if(potion>5) potion=3;
+		else if(potion <=0) potion = 0;
+		else potion=1;
+		deathCount++;
 	}
 	
 	public void getInfo() { //캐릭터 정보 출력

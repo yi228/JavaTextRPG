@@ -15,7 +15,7 @@ public class Game{
 		
 		System.out.println("==============================JAVA 텍스트 RPG==============================");
 		System.out.println("==========================================================2018125050 이정훈");
-		System.out.println("===========================================================================\n각 직업마다 체력과 공격력이 다릅니다.\n스킬은 일반 공격보다 1.5배 강력하며 한 사냥터에서 두 번 사용할 수 있습니다.\n사냥터에서 죽으면 경험치와 돈, 보유 물약이 0이 됩니다.\n보스 사냥터에는 레벨이 5의 배수일 때만 입장할 수 있습니다.\n마을에서 휴식을 취하면 체력이 최대치가 되지만 경험치가 0이 됩니다.\n===========================================================================\n");
+		System.out.println("===========================================================================\n각 직업마다 체력과 공격력이 다릅니다.\n스킬은 일반 공격보다 1.5배 강력하며 한 사냥터에서 두 번 사용할 수 있습니다.\n사냥터에서 죽으면 경험치가 0이 됩니다. 또한 돈과 물약을 일정량 잃게 됩니다.\n보스 사냥터에는 레벨이 5의 배수일 때만 입장할 수 있습니다.\n마을에서 휴식을 취하면 체력이 최대치가 되지만 경험치가 0이 됩니다.\n선택을 되돌리고 싶은 경우 선택지에 없는 번호를 입력하면 됩니다.\n===========================================================================\n");
 	}
 	
 	@SuppressWarnings("static-access")
@@ -28,8 +28,18 @@ public class Game{
 		String[] monKind = {"늑대인간", "언데드", "구울", "새끼 드래곤", "오우거", "골렘", "뱀파이어", "트롤"}; //몬스터 종류
 		double[] monHp = {35, 35, 30, 40, 40, 35, 30, 35}; //몬스터 체력
 		double[] monPo = {30, 20, 25, 30, 25, 30, 35, 25}; //몬스터 공격력
+		int v=0;
+		while(v==0) {
 		System.out.println("1. 불러오기  2. 새 게임");
-		ch.ld = sc.nextInt();
+		try{
+			ch.ld = sc.nextInt();
+			v=1;
+		}catch(InputMismatchException im) {
+			System.out.println("숫자를 입력하세요.\n");
+			sc = new Scanner(System.in);
+			continue;
+		}
+		}
 		if(ch.ld==1) {
 			monLevel = ch.load();
 		}
@@ -43,15 +53,22 @@ public class Game{
 			for(int i=1; i<=monLevel; i++) {
 				boss.levelUp();
 				for(int j=0; j<8; j++) {
-					monHp[j] *=2.1;
-					monPo[j] *=2.1;
+					monHp[j] *=2;
+					monPo[j] *=1.7;
 				}
 			}
+		}
 		while(true) {
 			tmpPlace = 0;
 			System.out.printf("장소를 선택하세요 : 1. 일반 사냥터   2. 보스 사냥터   3. 마을   4. 물약 상점   5. 게임 종료\n");
-			tmpPlace = sc.nextInt();
-			if(tmpPlace == 1) { //일반 사냥터
+			try{
+				tmpPlace = sc.nextInt();
+			}catch(InputMismatchException im) {
+				System.out.println("숫자를 입력하세요.\n");
+				sc = new Scanner(System.in);
+				continue;
+			}
+			if(tmpPlace == 1 && ch.level%5 !=0) { //일반 사냥터
 				int randNum1 = randomNum.nextInt(8);
 				int randNum2 = randomNum.nextInt(8);
 				Monster mon1 = new Monster(monKind[randNum1], monHp[randNum1], monPo[randNum1]); //몬스터 객체1 생성
@@ -59,18 +76,39 @@ public class Game{
 				System.out.println(" ");
 				mon1.getInfo();
 				mon2.getInfo();
+				int attObj;
 				while(true) {
 					System.out.println(" ");
-					int action = ch.huntAction();
+					int action;
+					try{
+						action = ch.huntAction();
+					}catch(InputMismatchException im) {
+						System.out.println("숫자를 입력하세요.\n");
+						sc = new Scanner(System.in);
+						continue;
+					}
 					if(action==1) {
 						System.out.printf("\n어떤 적을 공격할 지 고르세요 : 1. %s  2. %s\n", mon1.kind, mon2.kind);
-						int attObj = sc.nextInt();
+						try{
+							attObj = sc.nextInt();
+						}catch(InputMismatchException im) {
+							System.out.println("숫자를 입력하세요.\n");
+							sc = new Scanner(System.in);
+							continue;
+						}
 						if(attObj == 1) {
 							if(mon1.hp<=0) {
 								System.out.println("이미 죽은 적입니다..");
 								continue;
 							}
-							int attack = ch.attSelect();
+							int attack;
+							try{
+								attack = ch.attSelect();
+							}catch(InputMismatchException im) {
+								System.out.println("숫자를 입력하세요.\n");
+								sc = new Scanner(System.in);
+								continue;
+							}
 							if (attack==1) {
 								System.out.printf("%s에게 일반 공격\n\n", mon1.kind);
 								mon1.hp -= ch.power;
@@ -101,7 +139,14 @@ public class Game{
 								System.out.println("이미 죽은 적입니다..");
 								continue;
 							}
-							int attack = ch.attSelect();
+							int attack;
+							try{
+								attack = ch.attSelect();
+							}catch(InputMismatchException im) {
+								System.out.println("숫자를 입력하세요.\n");
+								sc = new Scanner(System.in);
+								continue;
+							}
 							if (attack==1) {
 								System.out.printf("%s에게 일반 공격\n\n", mon2.kind);
 								mon2.hp -= ch.power;
@@ -150,7 +195,6 @@ public class Game{
 						else {
 							System.out.println("당신의 패배입니다...\n");
 							ch.death();
-							ch.deathCount++;
 							break;
 						}
 					}
@@ -172,16 +216,33 @@ public class Game{
 					}
 				}
 			}
+			else if(tmpPlace==1 && ch.level%5 ==0) {
+				System.out.println("보스 몬스터가 당신의 도전을 기다리고 있습니다..\n");
+			}
 			else if(tmpPlace == 2 && ch.level%5 !=0) {
-				System.out.println("보스 사냥하기엔 너무 약합니다..\n");
+				System.out.println("보스 몬스터를 사냥하기엔 너무 약합니다..\n");
 			}
 			else if(tmpPlace == 2 && ch.level%5 ==0) {
 				boss.kind = boss.bossSelect();
 				boss.getInfo();
 				while(true) {
-					int action = ch.huntAction();
+					int action;
+					try{
+						action = ch.huntAction();
+					}catch(InputMismatchException im) {
+						System.out.println("숫자를 입력하세요.\n");
+						sc = new Scanner(System.in);
+						continue;
+					}
 					if(action==1) {
-						int attack = ch.attSelect();
+						int attack;
+						try{
+							attack = ch.attSelect();
+						}catch(InputMismatchException im) {
+							System.out.println("숫자를 입력하세요.\n");
+							sc = new Scanner(System.in);
+							continue;
+						}
 						if (attack==1) {
 							boss.hp -= ch.power;
 							System.out.printf("%s에게 일반 공격\n\n", boss.kind);
@@ -204,14 +265,15 @@ public class Game{
 						}
 						else {
 							System.out.printf("승리! 당신은 %s(을)를 죽였습니다! EXP +100 돈+100\n\n", boss.kind);
+							System.out.printf("보스 몬스터를 잡아 공격력이 증가했습니다!\n\n");
 							ch.killCount++;
 							ch.exp+=50;
 							ch.money+=50;
 							ch.huntFinish();
 							boss.levelUp();
 							for(int i=0; i<8; i++) {
-								monHp[i] *=1.8;
-								monPo[i] *=1.8;
+								monHp[i] *=2;
+								monPo[i] *=1.7;
 							}
 							break;
 						}
@@ -223,7 +285,6 @@ public class Game{
 						else {
 							System.out.println("당신의 패배입니다...\n");
 							ch.death();
-							ch.deathCount++;
 							break;
 						}
 					}
@@ -253,14 +314,31 @@ public class Game{
 			else if(tmpPlace == 4) {
 				System.out.println("물약 상점에 오신 것을 환영합니다. 저희 물약은 한 병만 마셔도 체력이 최대치가 된답니다!");
 				System.out.println("물약은 하나 당 30원입니다. 물약을 사시겠어요?  1. 예   2. 아니오");
-				int stAct = sc.nextInt();
+				int stAct;
+				try{
+					stAct = sc.nextInt();
+				}catch(InputMismatchException im) {
+					System.out.println("숫자를 입력하세요.\n");
+					sc = new Scanner(System.in);
+					continue;
+				}
 				if(stAct == 1) {
 					System.out.printf("얼마나 사시겠어요? (최대 구매 가능 개수: %d개)\n", ch.money/30);
-					int poNum = sc.nextInt();
+					int poNum;
+					try{
+						poNum = sc.nextInt();
+					}catch(InputMismatchException im) {
+						System.out.println("장난칠거면 나가!\n");
+						sc = new Scanner(System.in);
+						continue;
+					}
 					int price = poNum*30;
 					if(price>ch.money) {
-						System.out.println("돈도 없는게 욕심만 많네! 나가!");
+						System.out.println("돈도 없는게 욕심만 많네! 나가!\n");
 						continue;
+					}
+					else if(poNum<1) {
+						System.out.println("장난칠거면 나가!\n");
 					}
 					else {
 						System.out.printf("가격은 %d원입니다! 구매 감사합니다!\n", price);
@@ -279,7 +357,14 @@ public class Game{
 			}
 			else if(tmpPlace == 5) {
 				System.out.println("저장하시겠습니까? 1. 예  2. 아니오");
-				int sv = sc.nextInt();
+				int sv;
+				try{
+					sv = sc.nextInt();
+				}catch(InputMismatchException im) {
+					System.out.println("숫자를 입력하세요.\n");
+					sc = new Scanner(System.in);
+					continue;
+				}
 				if(sv==1) {
 					FileWriter fw = new FileWriter("./save.txt");
 					String data = ch.kind+"$"+ch.hp+"$"+ch.power+"$"+ch.exp+"$"+ch.fullhp+"$"+ch.money+"$"+ch.potion+"$"+boss.index+"$"+ch.level+"$"+ch.skill+"$"+ch.killCount+"$"+ch.deathCount;
@@ -312,5 +397,4 @@ public class Game{
 			System.out.println(" ");
 		}
 	}
-}
 }
